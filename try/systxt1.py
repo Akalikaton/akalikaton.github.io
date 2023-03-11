@@ -4,9 +4,9 @@ import codecs
 import markdown
 import os
 file = "0310"
-txt_file = "D:/Py/html2txt/try/%s.txt" %file
-md_file = "D:/Py/html2txt/try/%s.md" %file
-html_file = "D:/Py/html2txt/try/%s.html" %file
+txt_file = "./%s.txt" %file
+md_file = "./%s.md" %file
+html_file = "./%s.html" %file
 with open(txt_file, "r", encoding="utf-8") as file:
     # 读取文件内容并按行分割
     lines = file.readlines()
@@ -44,12 +44,13 @@ text = input_file.read()
 html = markdown.markdown(text)
 output_file = codecs.open(html_file, mode="w", encoding="utf-8")
 output_file.write(html)
-
 # 在 HTML 中插入 CSS 样式
 html_with_css = f"{css}\n{html}"
-
+# print(html_with_css)
 # 将 HTML 写入输出文件
 with open(html_file, "w", encoding="utf-8") as f:
+    # lines=f.readlines()
+    # print(lines)
     f.write(html_with_css)
 
 # os.remove(md_file)  
