@@ -16,3 +16,23 @@ html += '    </ul>\n  </body>\n</html>'
 with open('index.html', 'w') as f:
     f.write(html)
     
+css = """
+        <style>
+            body {
+                background-color: black;
+                color: white;
+                font-size: 42px;
+            }
+            h1 {
+                font-size: 56px;
+                text-decoration:underline
+            }
+        </style>
+        """
+# 在 HTML 中插入 CSS 样式
+html_with_css = f"{css}"
+        # print(html_with_css)
+        # 将 HTML 写入输出文件
+with open("index.html", "a", encoding="utf-8") as f:
+
+    f.write(html_with_css)
