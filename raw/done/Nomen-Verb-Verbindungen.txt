@@ -188,11 +188,11 @@ Dr. Weißhaupt übt seinen Beruf als Sozialarbeiter schon beruflich machen seit 
 
 Bescheid
 
-Bescheid gebenodersagen
+Bescheid geben oder sagen
 
 jmd. informieren
 
-Können Sie mir bitte Bescheid geben odersagen, wenn der nächste Kurs beginnt?
+Können Sie mir bitte Bescheid geben oder sagen, wenn der nächste Kurs beginnt?
 
  
 
@@ -242,7 +242,7 @@ Bezug nehmen auf
 
 sich beziehen auf
 
-Mit meinem Leserbrief nehme ich Bezug auf Ihren Artikel .Dr, Ich".
+Mit meinem Leserbrief nehme ich Bezug auf Ihren Artikel "Dr. Ich".
 
  
 
@@ -296,7 +296,7 @@ Ende
 
 zu Ende bringen
 
-beendenoderabschließen
+beenden oder abschließen
 
 Wir müssen die wichtigen Forschungsvorhaben zu Ende bringen.
 
@@ -386,9 +386,9 @@ Frage
 
 in Frage kommen
 
-relevantoderakzeptabel
+relevant oder akzeptabel
 
-Es kommt nicht in Frage,dass du schon wieder ein sein Online -Spiel spielst.
+Es kommt nicht in Frage, dass du schon wieder ein sein Online -Spiel spielst.
 
 außer Frage stehen
 
@@ -552,7 +552,7 @@ Rolle
 
 eine Rolle spielen
 
-wichtigoderrelevant sein
+wichtig oder relevant sein
 
 Bei vielen Problemen von Jugendlichen spielt Langeweile eine große Rolle
 
@@ -650,7 +650,7 @@ Ich möchte dazu kurz Stellung nehmen.
 
 Verabredung
 
-eine Verabredung treffen zuodermit
+eine Verabredung treffen zu oder mit
 
 etwas vereinbaren
 
