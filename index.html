@@ -1,36 +1,317 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>UA Deutsch Lernen</title>
-  </head>
-  <body>
-    <h1>UA Deutsch Lernen</h1>
-    <ul>
-      <li><a href="./htmldata/0304.html">0304.html</a></li>
-      <li><a href="./htmldata/0306.html">0306.html</a></li>
-      <li><a href="./htmldata/0308.html">0308.html</a></li>
-      <li><a href="./htmldata/0310.html">0310.html</a></li>
-      <li><a href="./htmldata/0311.html">0311.html</a></li>
-      <li><a href="./htmldata/0313.html">0313.html</a></li>
-      <li><a href="./htmldata/0315.html">0315.html</a></li>
-      <li><a href="./htmldata/0318.html">0318.html</a></li>
-      <li><a href="./htmldata/0320.html">0320.html</a></li>
-      <li><a href="./htmldata/Nomen-Verb-Verbindungen.html">Nomen-Verb-Verbindungen.html</a></li>
-      <li><a href="./htmldata/Normen-Verben.html">Normen-Verben.html</a></li>
-      <li><a href="./htmldata/Verben A.html">Verben A.html</a></li>
-      <li><a href="./htmldata/Verben B.html">Verben B.html</a></li>
-    </ul>
-  </body>
-</html>
-        <style>
-            body {
-                background-color: black;
-                color: white;
-                font-size: 42px;
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Paragraph Zen</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff; --text-color: #2c3e50;
+            --sidebar-bg: #f8f9fa; --sidebar-border: #e9ecef;
+            --accent: #007bff; --btn-hover: #f0f7ff;
+            --modal-bg: rgba(255, 255, 255, 0.98);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a; --text-color: #d1d1d1;
+                --sidebar-bg: #2d2d2d; --sidebar-border: #444;
+                --accent: #3794ff; --btn-hover: #333;
+                --modal-bg: rgba(30, 30, 30, 0.98);
             }
-            h1 {
-                font-size: 56px;
-                text-decoration:underline
-            }
-        </style>
+        }
+
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: flex; height: 100vh; overflow: hidden; background: var(--bg-color); color: var(--text-color); }
+
+        /* --- Sidebar --- */
+        #sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; padding: 15px; box-sizing: border-box; z-index: 10; }
+        .nav-header { font-size: 11px; font-weight: bold; margin-bottom: 10px; opacity: 0.5; text-transform: uppercase; letter-spacing: 0.5px; }
+        .btn { border: 1px solid var(--sidebar-border); background: var(--bg-color); color: var(--text-color); padding: 10px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: 0.2s; display: block; width: 100%; text-align: center; box-sizing: border-box; margin-bottom: 8px; }
+        .btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+        .btn-row { display: flex; gap: 8px; }
+        .btn-row .btn { flex: 1; margin-bottom: 0; }
         
+        #file-list { flex: 1; overflow-y: auto; margin: 10px 0; border-top: 1px solid var(--sidebar-border); padding-top: 10px; }
+        .file-item { padding: 10px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; align-items: center; border: 1px solid transparent; }
+        .file-item.active { background: var(--bg-color); border-color: var(--sidebar-border); color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 500; }
+        .del-btn { opacity: 0.3; padding: 4px; }
+        .del-btn:hover { opacity: 1; color: #ff4d4f; }
+
+        /* --- Main Content --- */
+        #main-container { flex: 1; display: flex; flex-direction: column; position: relative; }
+        #reader-viewport { flex: 1; overflow-y: auto; padding: 0 40px; scroll-behavior: smooth; }
+        
+        .zen-mode #page-content { max-width: 800px; margin: 20vh auto; font-size: 24px; line-height: 1.8; }
+        .scroll-mode #page-content { max-width: 800px; margin: 40px auto; font-size: 18px; line-height: 1.6; }
+
+        .scroll-section { position: relative; padding: 15px 40px; border-radius: 8px; transition: 0.2s; border-left: 3px solid transparent; }
+        .scroll-section:hover { background: var(--btn-hover); border-left-color: var(--accent); }
+        .focus-trigger { position: absolute; left: 10px; top: 20px; cursor: pointer; opacity: 0; font-size: 16px; }
+        .scroll-section:hover .focus-trigger { opacity: 1; }
+
+        /* --- Outline Modal --- */
+        #outline-modal { position: absolute; inset: 0; background: var(--modal-bg); backdrop-filter: blur(15px); display: none; flex-direction: column; padding: 40px; z-index: 100; }
+        #outline-list { flex: 1; overflow-y: auto; max-width: 700px; margin: 0 auto; width: 100%; }
+        .outline-link { padding: 10px 15px; cursor: pointer; border-radius: 6px; margin-bottom: 2px; }
+        .outline-link:hover { background: var(--accent); color: white; }
+        .h1 { font-size: 20px; font-weight: bold; } .h2 { margin-left: 20px; } .h3 { margin-left: 40px; }
+
+        /* --- Footer Controls --- */
+        #nav-controls { height: 80px; display: flex; border-top: 1px solid var(--sidebar-border); background: var(--sidebar-bg); }
+        .nav-btn { flex: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; transition: 0.2s; opacity: 0.7; user-select: none; }
+        .nav-btn:hover { background: var(--btn-hover); opacity: 1; }
+        .progress-box { width: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: var(--bg-color); border-left: 1px solid var(--sidebar-border); border-right: 1px solid var(--sidebar-border); }
+        
+        .storage-info { font-size: 10px; color: #999; display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--sidebar-border); }
+    </style>
+</head>
+<body class="zen-mode">
+
+<div id="sidebar">
+    <div class="nav-header">Library Management</div>
+    <div class="upload-section">
+        <button class="btn" onclick="document.getElementById('fileInput').click()" style="font-weight: bold;">+ Import Markdown</button>
+        <div class="btn-row">
+            <button class="btn" onclick="exportData()">Export Cache</button>
+            <button class="btn" onclick="document.getElementById('backupInput').click()">Import Cache</button>
+        </div>
+    </div>
+    
+    <input type="file" id="fileInput" style="display:none" onchange="handleFile(this, 'md')">
+    <input type="file" id="backupInput" style="display:none" onchange="handleFile(this, 'json')">
+
+    
+    <div id="file-list"></div>
+
+    <div class="storage-info">
+        <span>Storage: <span id="storageSize">0</span> KB</span>
+        <span onclick="clearAll()" style="color:#ff4d4f; cursor:pointer">Purge</span>
+    </div>
+</div>
+
+<div id="main-container">
+    <div id="outline-modal">
+        <div id="outline-list"></div>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+            <button class="btn" id="modeBtn" style="width:240px; background:var(--accent); color:white" onclick="toggleMode()">Switch to Scroll Mode</button>
+            <button class="btn" style="width:100px" onclick="closeOutline()">Close</button>
+        </div>
+    </div>
+
+    <div id="reader-viewport">
+        <div id="page-content">
+            <div style="text-align: center; margin-top: 30vh; opacity: 0.5;">
+                <h2>Paragraph Zen</h2>
+                <p>Import a Markdown file to start reading</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="nav-controls">
+        <div class="nav-btn" onclick="changePage(-1)">PREVIOUS</div>
+        <div class="progress-box" onclick="openOutline()">
+            <div id="pageNum" style="font-size: 20px; font-weight: bold;">0 / 0</div>
+        </div>
+        <div class="nav-btn" onclick="changePage(1)">NEXT</div>
+    </div>
+</div>
+
+<script>
+    let state = {
+        files: {},
+        meta: {},
+        current: null,
+        isScroll: false,
+        paragraphs: []
+    };
+
+    function init() {
+        try {
+            const f = localStorage.getItem('zen_files');
+            const m = localStorage.getItem('zen_meta');
+            const lastFile = localStorage.getItem('zen_last_file');
+            
+            if(f) state.files = JSON.parse(f);
+            if(m) state.meta = JSON.parse(m);
+            
+            renderFileList();
+            updateStorageSize();
+
+            // Auto-resume last file
+            if (lastFile && state.files[lastFile]) {
+                openBook(lastFile);
+            }
+        } catch(e) { console.error("Init Error", e); }
+    }
+
+    function handleFile(input, type) {
+        const file = input.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            if(type === 'md') {
+                state.files[file.name] = e.target.result;
+                state.meta[file.name] = { index: 0 };
+                save();
+                renderFileList();
+                openBook(file.name);
+            } else {
+                const data = JSON.parse(e.target.result);
+                state.files = data.files; state.meta = data.meta;
+                save(); location.reload();
+            }
+        };
+        reader.readAsText(file);
+        input.value = '';
+    }
+
+    function openBook(name) {
+        state.current = name;
+        localStorage.setItem('zen_last_file', name);
+        state.paragraphs = state.files[name].split(/\n+/).filter(p => p.trim() !== '');
+        state.isScroll = false;
+        document.body.className = 'zen-mode';
+        document.getElementById('nav-controls').style.display = 'flex';
+        render();
+        renderFileList();
+    }
+
+    function render() {
+        if(!state.current) return;
+        const container = document.getElementById('page-content');
+        const idx = state.meta[state.current].index;
+
+        if(state.isScroll) {
+            container.innerHTML = state.paragraphs.map((p, i) => `
+                <div class="scroll-section" id="s-${i}">
+                    <span class="focus-trigger" onclick="goZen(${i})">🎯</span>
+                    ${safeMarkdown(p)}
+                </div>
+            `).join('');
+            setTimeout(() => {
+                const target = document.getElementById(`s-${idx}`);
+                if(target) target.scrollIntoView();
+            }, 50);
+        } else {
+            container.innerHTML = safeMarkdown(state.paragraphs[idx]);
+            document.getElementById('pageNum').innerText = `${idx + 1} / ${state.paragraphs.length}`;
+            document.getElementById('reader-viewport').scrollTop = 0;
+        }
+        save();
+    }
+
+    function safeMarkdown(text) {
+        if(!text) return "";
+        return (window.marked && typeof window.marked.parse === 'function') 
+            ? marked.parse(text) 
+            : text.replace(/\n/g, '<br>');
+    }
+
+    function changePage(dir) {
+        if(!state.current || state.isScroll) return;
+        const newIdx = state.meta[state.current].index + dir;
+        if(newIdx >= 0 && newIdx < state.paragraphs.length) {
+            state.meta[state.current].index = newIdx;
+            render();
+        }
+    }
+
+    function toggleMode() {
+        state.isScroll = !state.isScroll;
+        document.body.className = state.isScroll ? 'scroll-mode' : 'zen-mode';
+        document.getElementById('modeBtn').innerText = state.isScroll ? 'Switch to Zen Mode' : 'Switch to Scroll Mode';
+        document.getElementById('nav-controls').style.display = state.isScroll ? 'none' : 'flex';
+        closeOutline();
+        render();
+    }
+
+    function goZen(idx) {
+        state.meta[state.current].index = idx;
+        state.isScroll = false;
+        document.body.className = 'zen-mode';
+        document.getElementById('nav-controls').style.display = 'flex';
+        render();
+    }
+
+    function openOutline() {
+        if(!state.current) return;
+        const list = document.getElementById('outline-list');
+        list.innerHTML = '';
+        state.paragraphs.forEach((p, i) => {
+            const h = p.trim().match(/^(#{1,6})\s+(.+)$/m);
+            if(h) {
+                const div = document.createElement('div');
+                div.className = `outline-link h${h[1].length}`;
+                div.innerText = h[2];
+                div.onclick = () => {
+                    state.meta[state.current].index = i;
+                    if(state.isScroll) {
+                        closeOutline();
+                        document.getElementById(`s-${i}`).scrollIntoView();
+                    } else {
+                        render(); closeOutline();
+                    }
+                };
+                list.appendChild(div);
+            }
+        });
+        document.getElementById('outline-modal').style.display = 'flex';
+    }
+
+    function closeOutline() { document.getElementById('outline-modal').style.display = 'none'; }
+
+    function renderFileList() {
+        const list = document.getElementById('file-list');
+        list.innerHTML = '';
+        Object.keys(state.files).forEach(name => {
+            const item = document.createElement('div');
+            item.className = `file-item ${state.current === name ? 'active' : ''}`;
+            item.innerHTML = `<span style="flex:1; overflow:hidden; text-overflow:ellipsis">${name}</span>
+                              <span class="del-btn" onclick="deleteFile(event, '${name}')">✕</span>`;
+            item.onclick = () => openBook(name);
+            list.appendChild(item);
+        });
+    }
+
+    function deleteFile(e, name) {
+        e.stopPropagation();
+        if(!confirm('Delete this file from cache?')) return;
+        delete state.files[name];
+        delete state.meta[name];
+        if(state.current === name) {
+            state.current = null;
+            localStorage.removeItem('zen_last_file');
+        }
+        save(); location.reload();
+    }
+
+    function save() {
+        localStorage.setItem('zen_files', JSON.stringify(state.files));
+        localStorage.setItem('zen_meta', JSON.stringify(state.meta));
+        updateStorageSize();
+    }
+
+    function updateStorageSize() {
+        let size = 0;
+        for(let k in localStorage) if(localStorage.hasOwnProperty(k)) size += localStorage[k].length;
+        document.getElementById('storageSize').innerText = Math.round(size * 2 / 1024);
+    }
+
+    function clearAll() { if(confirm('Purge all data and settings?')) { localStorage.clear(); location.reload(); } }
+
+    function exportData() {
+        const b = JSON.stringify({files: state.files, meta: state.meta});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([b], {type:'application/json'}));
+        a.download = `Zen_Backup_${new Date().getTime()}.json`; a.click();
+    }
+
+    window.onkeydown = (e) => {
+        if(e.key === 'ArrowRight' || e.key === 'PageDown') changePage(1);
+        if(e.key === 'ArrowLeft' || e.key === 'PageUp') changePage(-1);
+        if(e.key === 'Escape') closeOutline();
+    };
+
+    init();
+</script>
+</body>
+</html>
